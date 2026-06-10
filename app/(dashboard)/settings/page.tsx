@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/db/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -15,17 +16,14 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Settings</h1>
-        <p className="mt-1 text-slate-500">Agency configuration and autonomy policies.</p>
-      </div>
+      <PageHeader title="Settings" description="Agency configuration and autonomy policies." />
 
-      <Card>
+      <Card className="stripe-card border-0 ring-0">
         <CardHeader>
           <CardTitle className="text-base">Autonomy policies</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             All autonomous actions are disabled by default. Enable in Sprint 5.
           </p>
           {(policies ?? []).map((p: { id: string; action_type: string; policy: string; enabled: boolean }) => (
@@ -33,7 +31,7 @@ export default async function SettingsPage() {
               <span className="font-medium">{p.action_type.replace(/_/g, " ")}</span>
               <div className="flex gap-2">
                 <Badge variant="outline">{p.policy.replace(/_/g, " ")}</Badge>
-                <Badge className={p.enabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"}>
+                <Badge className={p.enabled ? "bg-emerald-100 text-emerald-800" : "bg-muted text-muted-foreground"}>
                   {p.enabled ? "Enabled" : "Disabled"}
                 </Badge>
               </div>

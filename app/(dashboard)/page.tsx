@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser, getApprovalInboxItems, getCommandCenterStats } from "@/lib/db/queries";
 import { StatsCard } from "@/components/layout/stats-card";
 import { InboxItemCard } from "@/components/approval-inbox/inbox-item-card";
+import { HeroBanner } from "@/components/layout/hero-banner";
+import { AnimatedGrid, AnimatedSection } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 
@@ -22,25 +24,24 @@ export default async function CommandCenterPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            {greeting}, {user.name}.
-          </h1>
-          <p className="mt-1 text-slate-500">
+      <HeroBanner
+        title={`${greeting}, ${user.name}.`}
+        description={
+          <>
             Jarvis handled {stats.handledToday} items today.{" "}
             {stats.pendingApprovals} approval{stats.pendingApprovals !== 1 ? "s" : ""} waiting for you.
-          </p>
-        </div>
+          </>
+        }
+      >
         <Link href="/inbox-ai">
-          <Button>
+          <Button size="lg" className="h-10 px-5">
             <Sparkles className="mr-2 h-4 w-4" />
             New request
           </Button>
         </Link>
-      </div>
+      </HeroBanner>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <AnimatedGrid cols={4}>
         <StatsCard
           label="Approvals waiting"
           value={stats.pendingApprovals}
@@ -49,49 +50,51 @@ export default async function CommandCenterPage() {
         <StatsCard label="Risks detected" value={stats.risks} variant={stats.risks > 0 ? "warning" : "default"} />
         <StatsCard label="Handled today" value={stats.handledToday} variant="success" />
         <StatsCard label="Approval rate (30d)" value={`${stats.approvalRate}%`} subtext="Last 30 days" />
-      </div>
+      </AnimatedGrid>
 
-      <section>
+      <AnimatedSection delay={300}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-medium text-slate-900">Approvals</h2>
-          <Link href="/approval-inbox" className="text-sm text-slate-500 hover:text-slate-700">
+          <h2 className="text-lg font-semibold text-foreground">Approvals</h2>
+          <Link href="/approval-inbox" className="text-sm text-primary transition-colors hover:text-primary/80">
             View all →
           </Link>
         </div>
         {pendingItems.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-slate-200 p-8 text-center text-slate-500">
+          <div className="stripe-card rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">
             <p>No approvals waiting. Paste a client request in Inbox AI to get started.</p>
             <Link href="/inbox-ai">
               <Button variant="outline" className="mt-4">Open Inbox AI</Button>
             </Link>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="animate-stagger-children space-y-3">
             {pendingItems.slice(0, 10).map((item) => (
               <InboxItemCard key={item.id} item={item} compact />
             ))}
           </div>
         )}
-      </section>
+      </AnimatedSection>
 
       {riskItems.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-lg font-medium text-slate-900">Risks</h2>
-          <div className="space-y-3">
+        <AnimatedSection delay={400}>
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Risks</h2>
+          <div className="animate-stagger-children space-y-3">
             {riskItems.map((item) => (
               <InboxItemCard key={item.id} item={item} compact />
             ))}
           </div>
-        </section>
+        </AnimatedSection>
       )}
 
-      <section className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-        <h2 className="text-lg font-medium text-slate-900">Daily Radar</h2>
-        <p className="mt-2 text-sm text-slate-500">
-          Daily Radar — coming in Sprint 4. Automated morning scan for overdue tasks,
-          blocked projects, and inactive clients.
-        </p>
-      </section>
+      <AnimatedSection delay={500}>
+        <section className="stripe-card stripe-card-hover rounded-xl p-6">
+          <h2 className="text-lg font-semibold text-foreground">Daily Radar</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Daily Radar — coming in Sprint 4. Automated morning scan for overdue tasks,
+            blocked projects, and inactive clients.
+          </p>
+        </section>
+      </AnimatedSection>
     </div>
   );
 }

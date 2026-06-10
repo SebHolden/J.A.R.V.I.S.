@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser, getApprovalInboxItems } from "@/lib/db/queries";
 import { InboxItemCard } from "@/components/approval-inbox/inbox-item-card";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function ApprovalInboxPage() {
   const supabase = await createClient();
@@ -13,19 +14,18 @@ export default async function ApprovalInboxPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Approval Inbox</h1>
-        <p className="mt-1 text-slate-500">
-          Exceptions and decisions only — not a task list.
-        </p>
-      </div>
+      <PageHeader
+        hero
+        title="Approval Inbox"
+        description="Exceptions and decisions only — not a task list."
+      />
 
       <section>
-        <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-slate-400">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Pending ({pending.length})
         </h2>
         {pending.length === 0 ? (
-          <p className="text-slate-500">No pending approvals.</p>
+          <p className="text-muted-foreground">No pending approvals.</p>
         ) : (
           <div className="grid gap-4">
             {pending.map((item) => (
@@ -37,7 +37,7 @@ export default async function ApprovalInboxPage() {
 
       {resolved.length > 0 && (
         <section>
-          <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-slate-400">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Resolved ({resolved.length})
           </h2>
           <div className="grid gap-4 opacity-75">

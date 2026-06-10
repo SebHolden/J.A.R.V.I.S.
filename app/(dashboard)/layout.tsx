@@ -16,10 +16,10 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar userName={user.name} />
-      <main className="flex-1 overflow-y-auto bg-white">
-        <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
+      <main className="flex-1 overflow-y-auto transition-colors duration-300">
+        <div className="mx-auto max-w-6xl px-8 py-10">{children}</div>
       </main>
     </div>
   );

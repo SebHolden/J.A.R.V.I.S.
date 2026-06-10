@@ -138,24 +138,3 @@ export async function structuredCompletion<T>(
   );
   return { result, tokensUsed };
 }
-
-export async function textCompletion(
-  systemPrompt: string,
-  userPrompt: string,
-  model = "gpt-4o",
-  options?: Partial<CallAIOptions>
-): Promise<{ result: string; tokensUsed: number }> {
-  const { result, tokensUsed } = await callAI(
-    systemPrompt,
-    userPrompt,
-    {
-      agencyId: options?.agencyId ?? "",
-      clientId: options?.clientId,
-      pipelineRunId: options?.pipelineRunId,
-      supabase: options?.supabase,
-      responseFormat: "text",
-    },
-    model
-  );
-  return { result, tokensUsed };
-}

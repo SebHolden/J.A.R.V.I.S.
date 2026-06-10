@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 const mainNav = [
   { href: "/", label: "Command Center", icon: LayoutDashboard },
@@ -35,6 +36,38 @@ const secondaryNav = [
   { href: "/briefs", label: "Briefs", icon: FileText },
 ];
 
+function NavLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+}: {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150",
+        active
+          ? "bg-accent text-accent-foreground shadow-[inset_3px_0_0_0_var(--primary)]"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      )}
+    >
+      <Icon
+        className={cn(
+          "h-4 w-4 shrink-0 transition-colors",
+          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+        )}
+      />
+      {label}
+    </Link>
+  );
+}
+
 export function Sidebar({ userName }: { userName: string }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -46,76 +79,55 @@ export function Sidebar({ userName }: { userName: string }) {
     router.refresh();
   }
 
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
-    <aside className="flex h-screen w-60 flex-col bg-slate-900 text-slate-100">
+    <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="px-5 py-6">
-        <div className="text-lg font-semibold tracking-tight">AgencyPilot</div>
-        <div className="mt-1 text-xs text-slate-400">Publitrust</div>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="stripe-logo-glow flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform duration-300 hover:scale-105">
+              <Sparkles className="h-4 w-4" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold tracking-tight text-foreground">AgencyPilot</div>
+              <div className="text-xs text-muted-foreground">Publitrust</div>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3">
-        {mainNav.map((item) => {
-          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                active
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 space-y-0.5 px-3">
+        {mainNav.map((item) => (
+          <NavLink key={item.href} {...item} active={isActive(item.href)} />
+        ))}
 
-        <Separator className="my-3 bg-slate-700" />
+        <Separator className="my-3" />
 
-        {secondaryNav.map((item) => {
-          const active = pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                active
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+        {secondaryNav.map((item) => (
+          <NavLink key={item.href} {...item} active={isActive(item.href)} />
+        ))}
 
-        <Separator className="my-3 bg-slate-700" />
+        <Separator className="my-3" />
 
-        <Link
-          href="/settings"
-          className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-            pathname.startsWith("/settings")
-              ? "bg-slate-800 text-white"
-              : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
-          )}
-        >
-          <Settings className="h-4 w-4" />
-          Settings
-        </Link>
+        <NavLink href="/settings" label="Settings" icon={Settings} active={isActive("/settings")} />
       </nav>
 
-      <div className="border-t border-slate-800 p-4">
-        <div className="mb-3 text-sm text-slate-300">{userName}</div>
+      <div className="border-t border-border p-4">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+            {userName.charAt(0).toUpperCase()}
+          </div>
+          <div className="min-w-0 truncate text-sm font-medium text-foreground">{userName}</div>
+        </div>
         <Button
           variant="ghost"
           size="sm"
-          className="w-full justify-start text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+          className="w-full justify-start text-muted-foreground hover:text-foreground"
           onClick={handleLogout}
         >
           <LogOut className="mr-2 h-4 w-4" />

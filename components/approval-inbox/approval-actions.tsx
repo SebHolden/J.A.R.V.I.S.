@@ -82,7 +82,7 @@ export function ApprovalActions({ item }: { item: ApprovalInboxItem }) {
 
   if (item.status !== "pending") {
     return (
-      <div className="text-sm text-slate-500">
+      <div className="text-sm text-muted-foreground">
         This item was {item.status} on{" "}
         {item.resolved_at ? new Date(item.resolved_at).toLocaleString("it-IT") : "—"}
       </div>

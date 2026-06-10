@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/db/queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function ProjectsPage() {
   const supabase = await createClient();
@@ -15,10 +16,7 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Projects</h1>
-        <p className="mt-1 text-slate-500">Active and completed client projects.</p>
-      </div>
+      <PageHeader title="Projects" description="Active and completed client projects." />
 
       <div className="grid gap-4">
         {(projects ?? []).map((p: {
@@ -29,19 +27,19 @@ export default async function ProjectsPage() {
           description: string | null;
           clients: { name: string };
         }) => (
-          <Card key={p.id}>
+          <Card key={p.id} className="stripe-card border-0 ring-0">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">{p.title}</CardTitle>
                 <Badge variant="outline">{p.status}</Badge>
               </div>
-              <p className="text-sm text-slate-500">{p.clients?.name}</p>
+              <p className="text-sm text-muted-foreground">{p.clients?.name}</p>
             </CardHeader>
             {p.description && (
               <CardContent>
-                <p className="text-sm text-slate-600">{p.description}</p>
+                <p className="text-sm text-muted-foreground">{p.description}</p>
                 {p.deadline && (
-                  <p className="mt-2 text-xs text-slate-400">Deadline: {p.deadline}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Deadline: {p.deadline}</p>
                 )}
               </CardContent>
             )}

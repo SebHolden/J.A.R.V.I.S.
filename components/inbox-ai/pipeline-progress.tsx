@@ -34,8 +34,8 @@ export function PipelineProgress({
                 className={cn(
                   "flex items-center gap-3 text-sm",
                   done && "text-emerald-600",
-                  active && "font-medium text-slate-900",
-                  !done && !active && "text-slate-400"
+                  active && "font-medium text-foreground",
+                  !done && !active && "text-muted-foreground"
                 )}
               >
                 {done ? (

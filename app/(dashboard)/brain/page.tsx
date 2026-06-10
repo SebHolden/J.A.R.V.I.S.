@@ -1,4 +1,5 @@
 import { BrainSearch } from "@/components/brain/brain-search";
+import { PageHeader } from "@/components/layout/page-header";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/db/queries";
 import { isEnabled } from "@/lib/flags/feature-flags";
@@ -14,8 +15,7 @@ export default async function BrainPage() {
   if (!enabled) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Agency Brain</h1>
-        <p className="text-slate-500">Agency Brain non è abilitato per la tua agenzia.</p>
+        <PageHeader title="Agency Brain" description="Agency Brain non è abilitato per la tua agenzia." />
       </div>
     );
   }
@@ -28,12 +28,12 @@ export default async function BrainPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Agency Brain</h1>
-        <p className="mt-1 text-slate-500">
-          Ricerca conversazionale su tutti i dati dell&apos;agenzia — sempre con fonti citate.
-        </p>
-      </div>
+      <PageHeader
+        hero
+        accent="cyan"
+        title="Agency Brain"
+        description="Ricerca conversazionale su tutti i dati dell'agenzia — sempre con fonti citate."
+      />
       <BrainSearch clients={clients ?? []} />
     </div>
   );

@@ -92,7 +92,7 @@ export function BrainSearch({ clients }: { clients: ClientOption[] }) {
             key={q}
             type="button"
             onClick={() => runSearch(q)}
-            className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+            className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground shadow-[var(--shadow-stripe)] transition-all hover:border-primary/30 hover:text-foreground"
           >
             {q}
           </button>
@@ -106,7 +106,7 @@ export function BrainSearch({ clients }: { clients: ClientOption[] }) {
       )}
 
       {!answer && !loading && !error && (
-        <p className="text-center text-slate-500">Inizia a cercare — scrivi una domanda in italiano.</p>
+        <p className="text-center text-muted-foreground">Inizia a cercare — scrivi una domanda in italiano.</p>
       )}
 
       {answer && (
@@ -114,34 +114,34 @@ export function BrainSearch({ clients }: { clients: ClientOption[] }) {
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-base">
               <span>Risposta</span>
-              <span className="text-sm font-normal text-slate-500">
+              <span className="text-sm font-normal text-muted-foreground">
                 Confidenza: {answer.confidence}%
               </span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-slate-800">{answer.answer}</p>
+            <p className="text-foreground">{answer.answer}</p>
 
             {answer.sources.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-700">Fonti</p>
+                <p className="text-sm font-medium text-foreground">Fonti</p>
                 {answer.sources.map((s) => (
                   <div
                     key={s.chunk_id}
-                    className="rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm"
+                    className="rounded-lg border border-border bg-muted p-3 text-sm"
                   >
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded bg-white px-2 py-0.5 text-xs text-slate-600">
+                      <span className="rounded bg-card px-2 py-0.5 text-xs text-muted-foreground">
                         {s.source_label}
                       </span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-muted-foreground">
                         Rilevanza: {Math.round(s.relevance_score * 100)}%
                       </span>
                       <a href={s.link} className="text-xs text-blue-600 hover:underline">
                         Apri
                       </a>
                     </div>
-                    <p className="mt-2 text-slate-600">{s.snippet}</p>
+                    <p className="mt-2 text-muted-foreground">{s.snippet}</p>
                   </div>
                 ))}
               </div>
@@ -156,7 +156,7 @@ export function BrainSearch({ clients }: { clients: ClientOption[] }) {
             </button>
 
             {expandedWhy && (
-              <div className="space-y-2 rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-700">
+              <div className="space-y-2 rounded-lg border border-border bg-muted p-3 text-sm text-foreground">
                 <p>{answer.selection_reasoning}</p>
                 {answer.alternatives_considered.length > 0 && (
                   <div>
