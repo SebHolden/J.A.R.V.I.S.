@@ -142,21 +142,20 @@ export async function structuredCompletion<T>(
 export async function textCompletion(
   systemPrompt: string,
   userPrompt: string,
-  model = "gpt-4o"
+  model = "gpt-4o",
+  options?: Partial<CallAIOptions>
 ): Promise<{ result: string; tokensUsed: number }> {
-  const openai = getOpenAI();
-  const response = await openai.chat.completions.create({
-    model,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-    temperature: 0.4,
-  });
-
-  const content = response.choices[0]?.message?.content ?? "";
-  const tokensUsed =
-    (response.usage?.prompt_tokens ?? 0) + (response.usage?.completion_tokens ?? 0);
-
-  return { result: content, tokensUsed };
+  const { result, tokensUsed } = await callAI(
+    systemPrompt,
+    userPrompt,
+    {
+      agencyId: options?.agencyId ?? "",
+      clientId: options?.clientId,
+      pipelineRunId: options?.pipelineRunId,
+      supabase: options?.supabase,
+      responseFormat: "text",
+    },
+    model
+  );
+  return { result, tokensUsed };
 }

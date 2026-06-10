@@ -30,7 +30,18 @@ async function main() {
     process.exit(1);
   }
 
-  const cookie = `sb-localhost-auth-token=${encodeURIComponent(JSON.stringify(auth))}`;
+  const session = {
+    access_token: auth.access_token,
+    refresh_token: auth.refresh_token,
+    expires_in: auth.expires_in,
+    expires_at: auth.expires_at,
+    token_type: auth.token_type,
+    user: auth.user,
+  };
+  const hostname = new URL(supabaseUrl).hostname.split(".")[0];
+  const cookieName = `sb-${hostname}-auth-token`;
+  const cookieValue = `base64-${Buffer.from(JSON.stringify(session)).toString("base64url")}`;
+  const cookie = `${cookieName}=${encodeURIComponent(cookieValue)}`;
   let allPass = true;
 
   console.log("\n=== Agency Brain Smoke Test ===\n");

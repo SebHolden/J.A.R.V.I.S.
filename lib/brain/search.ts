@@ -95,13 +95,26 @@ export async function generateBrainAnswer(
   const threshold = 0.75;
 
   if (!top || top.similarity < threshold) {
+    const fallbackMatches = matches.slice(0, 3);
+    const fallbackSources: BrainSource[] = [];
+    for (const chunk of fallbackMatches) {
+      const label = await resolveLabel(supabase, chunk);
+      fallbackSources.push(mapToBrainSource(chunk, label));
+    }
+
+    const topLabel = fallbackSources[0]?.source_label ?? "nessun materiale";
+    const topScore = top ? Math.round(top.similarity * 100) : 0;
+
     return {
-      answer:
-        "Non ho trovato materiali sufficientemente rilevanti. Prova a riformulare la ricerca o verifica che il materiale sia stato caricato.",
-      confidence: 0,
-      sources: [],
-      selection_reasoning: "Nessun chunk ha superato la soglia di similarità 0.75.",
-      alternatives_considered: matches.slice(0, 3).map((m) => mapToBrainSource(m)),
+      answer: top
+        ? `Non ho trovato una corrispondenza sufficientemente affidabile (soglia 75%). Il materiale più vicino è «${topLabel}» (rilevanza ${topScore}%). Verifica le fonti collegate o riformula la ricerca.`
+        : "Non ho trovato materiali rilevanti. Prova a riformulare la ricerca o verifica che il materiale sia stato caricato.",
+      confidence: topScore,
+      sources: fallbackSources,
+      selection_reasoning: top
+        ? `Nessun chunk ha superato la soglia di similarità 0.75. Miglior match: ${top.similarity.toFixed(2)}.`
+        : "Nessun chunk trovato per questa query.",
+      alternatives_considered: matches.slice(3, 6).map((m) => mapToBrainSource(m)),
       client_scope: clientScopeLabel,
     };
   }
